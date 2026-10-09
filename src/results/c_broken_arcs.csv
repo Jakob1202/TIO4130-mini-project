@@ -1,0 +1,12 @@
+﻿from,to,area,length,on_route,two_way
+Warszawa,Radom,1,15.133,True,False
+Konin,Sieradz,1,9.849,False,True
+Sieradz,Konin,1,9.849,False,True
+Kielce,Bytom,2,24.597,True,False
+Bytom,Gliwice,2,3.162,True,False
+Bielsko,Jastrzębie-Zdrój,2,5.831,False,True
+Jastrzębie-Zdrój,Bielsko,2,5.831,False,True
+Leszno,Legnica,3,12.53,True,False
+Legnica,Jelenia Góra,3,7.071,True,False
+Wrocław,Leszno,3,13.342,True,False
+Opole,Wrocław,3,15.264,True,False
