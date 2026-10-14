@@ -3,10 +3,10 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 CITIES_FILE = ROOT / "data" / "cities.csv"
-SOLUTION_FILE = ROOT / "results" / "c_solution.csv"
-OUTPUT_FILE = ROOT / "results" / "c_map.png"
+SOLUTION_FILE = ROOT / "results" / "1" / "c_solution.csv"
+OUTPUT_FILE = ROOT / "results" / "1" / "c_map.png"
 
 # Connections that already exist and are not built by the model
 EXISTING_LINKS = [("Radom", "Kielce"), ("Gliwice", "Opole")]

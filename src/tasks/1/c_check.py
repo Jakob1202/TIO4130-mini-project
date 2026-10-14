@@ -1,6 +1,6 @@
 """Independent checker for case C (MobiPhlex main line, Warszawa -> Jelenia Góra).
 
-Reads data/cities.csv and results/c_solution.csv and checks every requirement in the
+Reads data/cities.csv and results/1/c_solution.csv and checks every requirement in the
 case text. Prints PASS/FAIL per check and exits with status 1 if anything fails.
 
 Interpretations of the case text (decided here, since the text is not explicit):
@@ -21,9 +21,9 @@ import math
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 CITIES_FILE = ROOT / "data" / "cities.csv"
-SOLUTION_FILE = ROOT / "results" / "c_solution.csv"
+SOLUTION_FILE = ROOT / "results" / "1" / "c_solution.csv"
 
 AREAS = {1: ("Warszawa", "Radom", 2), 2: ("Kielce", "Gliwice", 3), 3: ("Opole", "Jelenia Góra", 3)}
 EXISTING_LINKS = {frozenset(("Radom", "Kielce")), frozenset(("Gliwice", "Opole"))}

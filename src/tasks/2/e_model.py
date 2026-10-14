@@ -6,11 +6,11 @@ from pathlib import Path
 import gurobipy as gp
 from gurobipy import GRB
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_FILE = ROOT / "data" / "cities.csv"
 PARAMETERS_FILE = ROOT / "data" / "copper_parameters.json"
-ROUTE_FILE = ROOT / "results" / "c_solution.csv"
-RESULTS_DIR = ROOT / "results"
+ROUTE_FILE = ROOT / "results" / "1" / "c_solution.csv"
+RESULTS_DIR = ROOT / "results" / "2"
 
 # Define model
 m = gp.Model("task_e")
@@ -128,7 +128,7 @@ if m.status == GRB.OPTIMAL:
         station_rows.append([s, B_s[s], used, percentage])
 
     # Save all capacities, including unused connections
-    RESULTS_DIR.mkdir(exist_ok=True)
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     solution_rows = []
     for i in N:
         for s in S:

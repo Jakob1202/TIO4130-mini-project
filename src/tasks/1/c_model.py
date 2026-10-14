@@ -1,12 +1,15 @@
 import csv
+import json
 import math
+import operator
 from pathlib import Path
 
 import gurobipy as gp
 from gurobipy import GRB
 
-DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "cities.csv"
-RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "cities.csv"
+PARAMS_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "main_cable_parameters.json"
+RESULTS_DIR = Path(__file__).resolve().parent.parent.parent / "results" / "1"
 
 # Define model
 m = gp.Model("task_c")
@@ -14,6 +17,11 @@ m = gp.Model("task_c")
 # Read the raw city data: one row per city with area, city, x and y
 with open(DATA_FILE, encoding="utf-8-sig") as f:
     cities = list(csv.DictReader(f))
+
+# Read the area parameters (start, end, minimum intermediate cities) and the city constraints
+with open(PARAMS_FILE, encoding="utf-8") as f:
+    params = json.load(f)
+areas = {int(k): area for k, area in params["areas"].items()}
 
 # Sets and indices
 
@@ -24,8 +32,8 @@ K = sorted({int(row["area"]) for row in cities})
 V_k = {k: [row["city"] for row in cities if int(row["area"]) == k] for k in K}
 
 # Starting city s_k and ending city t_k in each area
-s_k = {1: "Warszawa", 2: "Kielce", 3: "Opole"}
-t_k = {1: "Radom", 2: "Gliwice", 3: "Jelenia Góra"}
+s_k = {k: areas[k]["start"] for k in K}
+t_k = {k: areas[k]["end"] for k in K}
 
 # I_k: intermediate cities (all cities except start and end)
 I_k = {k: [i for i in V_k[k] if i not in (s_k[k], t_k[k])] for k in K}
@@ -50,10 +58,10 @@ D_ij = {(i, j): math.sqrt((X_i[i] - X_i[j]) ** 2 + (Y_i[i] - Y_i[j]) ** 2) for (
 M_k = {k: len(V_k[k]) for k in K}
 
 # R_k: minimum number of intermediate cities in area k
-R_k = {1: 2, 2: 3, 3: 3}
+R_k = {k: areas[k]["min_intermediate"] for k in K}
 
-# C: construction cost per unit of cable length (assumed to be 1 for simplicity)
-C = 1
+# C: construction cost per unit of cable length
+C = params["cost_per_length"]
 
 # Variables
 
@@ -103,17 +111,12 @@ for k in K:
     # (8) Minimum number of intermediate cities in each area
     m.addConstr(gp.quicksum(y_i[i] for i in I_k[k]) >= R_k[k], name=f"min_cities_{k}")
 
-# (9) At least one of Konin and Kalisz
-m.addConstr(y_i["Konin"] + y_i["Kalisz"] >= 1, name="konin_kalisz")
-
-# (10) At most one of Bytom, Sosnowiec and Katowice
-m.addConstr(y_i["Bytom"] + y_i["Sosnowiec"] + y_i["Katowice"] <= 1, name="bytom_sosnowiec_katowice")
-
-# (11) Wodzisław Śląski and Jastrzębie-Zdrój cannot both be included
-m.addConstr(y_i["Wodzisław Śląski"] + y_i["Jastrzębie-Zdrój"] <= 1, name="wodzislaw_jastrzebie")
-
-# (12) At least one of Poznań, Zielona Góra and Leszno
-m.addConstr(y_i["Poznań"] + y_i["Zielona Góra"] + y_i["Leszno"] >= 1, name="poznan_zielona_leszno")
+# (9)-(12) Constraints on which cities are included, read from the parameter file:
+# sum of y_i over the listed cities (<=, >= or ==) rhs
+SENSES = {"<=": operator.le, ">=": operator.ge, "==": operator.eq}
+for con in params["city_constraints"]:
+    lhs = gp.quicksum(y_i[i] for i in con["cities"])
+    m.addConstr(SENSES[con["sense"]](lhs, con["rhs"]), name=con["name"])
 
 for k in K:
     # (13) A pair of cities can only be connected in one direction
@@ -157,13 +160,9 @@ if m.status == GRB.OPTIMAL:
         )
 
     # Print the complete main cable route
-    full_route = (
-        routes[1]
-        + routes[2]
-        + routes[3]
-    )
+    full_route = [city for k in K for city in routes[k]]
 
-    print("\nThe cities connected by the main cable in order. Starting from Warsaw\n")
+    print(f"\nThe cities connected by the main cable in order. Starting from {s_k[K[0]]}\n")
     print(" -> ".join(full_route))
 
     # Print routes distinguished by area
@@ -172,8 +171,8 @@ if m.status == GRB.OPTIMAL:
         print(f"Area {k}: {' -> '.join(routes[k])}")
         print(f"Length: {lengths[k]:.2f}\n")
 
-    # Save the main cable route to results/c_solution.csv
-    RESULTS_DIR.mkdir(exist_ok=True)
+    # Save the main cable route to results/1/c_solution.csv
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     city_area = {city: k for k in K for city in V_k[k]}
 

@@ -8,12 +8,12 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent.parent
-RESULTS_DIR = ROOT / "results"
+ROOT = Path(__file__).resolve().parent.parent.parent
+RESULTS_DIR = ROOT / "results" / "2"
 #Read inputs
 with open(ROOT / "data/cities.csv", encoding="utf-8-sig") as f:
     cities = list(csv.DictReader(f))
-with open(RESULTS_DIR / "c_solution.csv", encoding="utf-8-sig") as f:
+with open(ROOT / "results" / "1" / "c_solution.csv", encoding="utf-8-sig") as f:
     route = {r["city"] for r in csv.DictReader(f)}
 with open(ROOT / "data/copper_parameters.json", encoding="utf-8") as f:
     parameters = json.load(f)

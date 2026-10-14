@@ -7,11 +7,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 CITIES_FILE = ROOT / "data" / "cities.csv"
-ROUTE_FILE = ROOT / "results" / "c_solution.csv"
-CONNECTIONS_FILE = ROOT / "results" / "e_solution.csv"
-OUTPUT_FILE = ROOT / "results" / "e_combined_map.png"
+ROUTE_FILE = ROOT / "results" / "1" / "c_solution.csv"
+CONNECTIONS_FILE = ROOT / "results" / "2" / "e_solution.csv"
+OUTPUT_FILE = ROOT / "results" / "2" / "e_combined_map.png"
 
 # Read city coordinates, the main line, and copper cable capacities
 with open(CITIES_FILE, encoding="utf-8-sig") as f:

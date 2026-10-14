@@ -5,7 +5,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 
@@ -13,10 +13,10 @@ ROOT = Path(__file__).resolve().parent.parent
 with open(ROOT / 'data/cities.csv', encoding='utf-8-sig') as f:
     cities = {r['city']: (float(r['x']), float(r['y'])) for r in csv.DictReader(f)}
 # Read the main route in visiting order
-with open(ROOT / 'results/c_solution.csv', encoding='utf-8-sig') as f:
+with open(ROOT / 'results/1/c_solution.csv', encoding='utf-8-sig') as f:
     route = [r['city'] for r in sorted(csv.DictReader(f), key=lambda r: int(r['order']))]
 # Read the copper capacities
-with open(ROOT / 'results/e_solution.csv', encoding='utf-8-sig') as f:
+with open(ROOT / 'results/2/e_solution.csv', encoding='utf-8-sig') as f:
     rows = list(csv.DictReader(f))
 colors = {'Warszawa': 'tab:blue', 'Kielce': 'tab:orange', 'Opole': 'tab:green'}
 fig, axes = plt.subplots(1, 3, figsize=(21, 9), sharex=True, sharey=True)
@@ -42,6 +42,6 @@ for ax, (station, color) in zip(axes, colors.items()):
 axes[0].set_ylabel('y')
 fig.suptitle('Copper connections: cable labels in TB/s; fixed main line in gray')
 fig.tight_layout()
-fig.savefig(ROOT / 'results/e_map.png', dpi=160)
+fig.savefig(ROOT / 'results/2/e_map.png', dpi=160)
 plt.close(fig)
-print('Saved results/e_map.png')
+print('Saved results/2/e_map.png')
