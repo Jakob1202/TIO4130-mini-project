@@ -1,0 +1,38 @@
+{
+  "cost_per_length": 1,
+  "areas": {
+    "1": {"start": "Warszawa", "end": "Radom", "min_intermediate": 2},
+    "2": {"start": "Kielce", "end": "Gliwice", "min_intermediate": 3},
+    "3": {"start": "Opole", "end": "Jelenia Góra", "min_intermediate": 3}
+  },
+  "city_constraints": [
+    {
+      "name": "konin_kalisz",
+      "description": "At least one of Konin and Kalisz",
+      "cities": ["Konin", "Kalisz"],
+      "sense": ">=",
+      "rhs": 1
+    },
+    {
+      "name": "bytom_sosnowiec_katowice",
+      "description": "At most one of Bytom, Sosnowiec and Katowice",
+      "cities": ["Bytom", "Sosnowiec", "Katowice"],
+      "sense": "<=",
+      "rhs": 1
+    },
+    {
+      "name": "wodzislaw_jastrzebie",
+      "description": "Wodzisław Śląski and Jastrzębie-Zdrój cannot both be included",
+      "cities": ["Wodzisław Śląski", "Jastrzębie-Zdrój"],
+      "sense": "<=",
+      "rhs": 1
+    },
+    {
+      "name": "poznan_zielona_leszno",
+      "description": "At least one of Poznań, Zielona Góra and Leszno",
+      "cities": ["Poznań", "Zielona Góra", "Leszno"],
+      "sense": ">=",
+      "rhs": 1
+    }
+  ]
+}

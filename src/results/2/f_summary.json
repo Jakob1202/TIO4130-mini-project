@@ -5,7 +5,7 @@
   "konin_allowable_demand_max": 295.1357565897294,
   "pi_baseline": 3.141592653589793,
   "pi_min": 2.9326165322181756,
-  "pi_max": 3.1968220284562485,
+  "pi_max": 3.19682202845624,
   "lower_limiting_variable": "slack_distance_8_1",
   "upper_limiting_variable": "f_18",
   "formulation": "Separate 200 TB/s and distance limits; baseline primal simplex basis saved in f_baseline.bas"
