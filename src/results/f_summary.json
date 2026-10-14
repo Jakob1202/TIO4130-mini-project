@@ -1,0 +1,12 @@
+{
+  "baseline_cost_eur": 66696434.42945128,
+  "konin_shadow_price_eur_per_tbps": 37865.40426261629,
+  "konin_allowable_demand_min": 200.0,
+  "konin_allowable_demand_max": 295.1357565897294,
+  "pi_baseline": 3.141592653589793,
+  "pi_min": 2.9326165322181756,
+  "pi_max": 3.1968220284562485,
+  "lower_limiting_variable": "slack_distance_8_1",
+  "upper_limiting_variable": "f_18",
+  "formulation": "Separate 200 TB/s and distance limits; baseline primal simplex basis saved in f_baseline.bas"
+}

@@ -6,7 +6,7 @@ The project has two parts:
 - **Task c (main cable):** an integer linear program that finds the cheapest main
   cable from Warszawa to Jelenia Góra through three areas of Poland, while
   meeting the geographical and governmental requirements.
-- **Task d (copper cables):** a continuous linear program that connects the
+- **Tasks d/e (copper cables):** a continuous linear program that connects the
   cities not on the main line to the switching stations in Warszawa, Kielce and
   Opole. It meets each city's demand at the lowest cable cost, within the limits
   on station capacity, cable capacity, cable length and the 40% rule for Łódź.
@@ -92,3 +92,32 @@ python src/tasks/c_visualize_broken.py   # Draw every selected connection and sa
 
 The broken model saves to its own files, so it does not overwrite the
 results from `c_model.py`.
+
+## Running the copper connection model (tasks d and e)
+
+Task d is the mathematical formulation; task e is its implementation. The
+model reads `src/data/cities.csv`, `src/data/copper_parameters.json`, and the
+fixed main route in `src/results/c_solution.csv`.
+
+```bash
+python src/tasks/e_model.py       # Solve and export capacities, costs, and dual values
+python src/tasks/e_check.py       # Validate saved capacities against the input data
+python src/tasks/e_visualize.py   # Save the capacity map without opening a window
+```
+
+Results are saved separately from the main cable results:
+
+- `e_solution.csv`: all city-station pairs, distances, demands, cable bounds,
+  installed capacities, and costs, including zero-capacity connections.
+- `e_stations.csv`: station capacities, utilized capacities, and percentages.
+- `e_summary.json`: total cost and number of positive cables.
+- `e_duals.csv`: constraint shadow prices, slacks, and individual RHS sensitivity
+  ranges. These ranges alone do not establish the simultaneous allowable interval
+  for pi requested in task f.
+- `e_map.png`: three station panels showing the fixed main route and copper
+  cable capacities in TB/s.
+
+The checker does not import the model and recalculates distances and bounds.
+It was generated with knowledge of the formulation, so it must not be described
+as an AI checker written without seeing the model. Task e also requires your
+own explanation using dual values before asking AI to evaluate that explanation.

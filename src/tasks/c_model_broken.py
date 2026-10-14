@@ -9,7 +9,6 @@ DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "cities.csv"
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
 
 USE_ONE_DIRECTION = False  # constraint (13)
-USE_SUBTOUR_ELIMINATION = False  # constraint (14)
 
 # Define model
 m = gp.Model("task_c_broken")
@@ -124,11 +123,6 @@ for k in K:
         for (i, j) in A_k[k]:
             if i < j:  # add each pair only once
                 m.addConstr(x_ij[i, j] + x_ij[j, i] <= 1, name=f"one_direction_{i}_{j}")
-
-    # (14) Subtour elimination: the next city in the route gets a higher position
-    if USE_SUBTOUR_ELIMINATION:
-        for (i, j) in A_k[k]:
-            m.addConstr(u_i[j] >= u_i[i] + 1 - M_k[k] * (1 - x_ij[i, j]), name=f"subtour_{i}_{j}")
 
     # (15) The starting city has position 0
     m.addConstr(u_i[s_k[k]] == 0, name=f"order_start_{k}")

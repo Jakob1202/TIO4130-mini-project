@@ -1,0 +1,8 @@
+{
+  "stations": {"Warszawa": 800, "Kielce": 1200, "Opole": 400},
+  "cost_eur_per_length_tbps": 1000,
+  "max_cable_tbps": 200,
+  "distance_plateau": 35,
+  "distance_cutoff": 70,
+  "lodz_max_share": 0.4
+}

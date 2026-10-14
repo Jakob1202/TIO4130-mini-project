@@ -121,10 +121,6 @@ for k in K:
         if i < j:  # add each pair only once
             m.addConstr(x_ij[i, j] + x_ij[j, i] <= 1, name=f"one_direction_{i}_{j}")
 
-    # (14) Subtour elimination: the next city in the route gets a higher position
-    for (i, j) in A_k[k]:
-        m.addConstr(u_i[j] >= u_i[i] + 1 - M_k[k] * (1 - x_ij[i, j]), name=f"subtour_{i}_{j}")
-
     # (15) The starting city has position 0
     m.addConstr(u_i[s_k[k]] == 0, name=f"order_start_{k}")
 
