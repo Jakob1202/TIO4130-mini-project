@@ -38,7 +38,10 @@ for ax, (station, color) in zip(axes, colors.items()):
     ax.set_xlabel('x')
     ax.grid(alpha=.2)
 axes[0].set_ylabel('y')
-fig.suptitle('Copper connections: cable labels in TB/s; fixed main line in gray')
+fig.suptitle(
+    'Copper connections: cable labels in TB/s; fixed main line in gray',
+    y=0.88
+)
 fig.tight_layout()
 fig.savefig(ROOT / 'results/2/e_map.png', dpi=160)
 plt.close(fig)
