@@ -17,7 +17,6 @@ LOOP_COLOR = "tab:red"
 # Cities that are close together get their labels moved so they do not overlap
 LABEL_OFFSETS = {"Wodzisław Śląski": (-75, -14), "Bytom": (5, 7), "Katowice": (-48, -14)}
 
-
 # Read all cities
 with open(CITIES_FILE, encoding="utf-8-sig") as f:
     cities = {
@@ -30,8 +29,6 @@ with open(ARCS_FILE, encoding="utf-8-sig") as f:
     arcs = list(csv.DictReader(f))
 
 used_cities = {row["from"] for row in arcs} | {row["to"] for row in arcs}
-
-
 fig, ax = plt.subplots(figsize=(11, 10))
 
 # Draw the selected connections. Connections on the main cable get the area color,

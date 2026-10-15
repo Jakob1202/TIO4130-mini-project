@@ -38,7 +38,7 @@ S = list(parameters["stations"])
 # Coordinates and demand of each remaining city
 X_i = {row["city"]: float(row["x"]) for row in cities}
 Y_i = {row["city"]: float(row["y"]) for row in cities}
-q_i = {row["city"]: float(row["demand_tbps"]) for row in cities if row["city"] in N}
+Q_i = {row["city"]: float(row["demand_tbps"]) for row in cities if row["city"] in N}
 
 # B_s: available capacity at each station
 B_s = parameters["stations"]
@@ -80,7 +80,7 @@ m.setObjective(
 # (1) Meet every remaining city's demand
 for i in N:
     m.addConstr(
-        gp.quicksum(f_is[i, s] for s in S if (i, s) in E) == q_i[i],
+        gp.quicksum(f_is[i, s] for s in S if (i, s) in E) == Q_i[i],
         name=f"demand_{i}",
     )
 
@@ -100,7 +100,7 @@ if "Łódź" in N:
     for s in S:
         if ("Łódź", s) in E:
             m.addConstr(
-                f_is["Łódź", s] <= parameters["lodz_max_share"] * q_i["Łódź"],
+                f_is["Łódź", s] <= parameters["lodz_max_share"] * Q_i["Łódź"],
                 name=f"lodz_{s}",
             )
 
@@ -134,7 +134,7 @@ if m.status == GRB.OPTIMAL:
         for s in S:
             capacity = f_is[i, s].X if (i, s) in E else 0
             cost = C * D_is[i, s] * capacity
-            solution_rows.append([i, s, D_is[i, s], q_i[i], U_is.get((i, s), 0), capacity, cost])
+            solution_rows.append([i, s, D_is[i, s], Q_i[i], U_is.get((i, s), 0), capacity, cost])
 
     with open(RESULTS_DIR / "e_solution.csv", "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)

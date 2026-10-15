@@ -18,7 +18,7 @@ with open(ROOT / "results" / "1" / "c_solution.csv", encoding="utf-8-sig") as f:
 with open(ROOT / "data/copper_parameters.json", encoding="utf-8") as f:
     parameters = json.load(f)
 
-#Sets and parameters
+# Sets and parameters
 N = [r["city"] for r in cities if r["city"] not in route]
 S = list(parameters["stations"])
 q_i = {r["city"]: float(r["demand_tbps"]) for r in cities if r["city"] in N}
@@ -27,8 +27,8 @@ D_is = {(i, s): math.dist(coordinates[i], coordinates[s]) for i in N for s in S}
 E = [(i, s) for i in N for s in S if D_is[i, s] < parameters["distance_cutoff"]]
 a_is = {(i, s): min(parameters["distance_plateau"], parameters["distance_cutoff"] - D_is[i, s]) for i, s in E}
 
-#Keep the constant and distance-dependent cable limits separate.
-#This equivalent formulation makes all changing RHS values linear in pi.
+# eep the constant and distance-dependent cable limits separate.
+# This equivalent formulation makes all changing RHS values linear in pi.
 m = gp.Model("task_f")
 m.Params.OutputFlag = 0
 m.Params.Method = 0  #Primal simplex returns a basic solution
@@ -51,7 +51,7 @@ m.optimize()
 if m.Status != GRB.OPTIMAL:
     raise RuntimeError("Baseline is not optimal")
 
-#Save baseline sensitivity information before changing demand
+# Save baseline sensitivity information before changing demand
 baseline_cost = m.ObjVal
 variables = m.getVars()
 constraints = m.getConstrs()
@@ -62,7 +62,7 @@ konin = m.getConstrByName("demand_Konin")
 shadow_price = konin.Pi
 rhs_min, rhs_max = konin.SARHSLow, konin.SARHSUp
 
-#Part 1: calculate the allowable pi interval from the baseline basis.
+# Part 1: calculate the allowable pi interval from the baseline basis.
 A = m.getA().toarray()
 columns = []
 names = []
@@ -73,7 +73,7 @@ for j, status in enumerate(variable_basis):
 for j, status in enumerate(constraint_basis):
     if status == 0:
         column = np.zeros(len(constraints))
-        column[j] = 1  #All inequality constraints in this model use <=
+        column[j] = 1  # All inequality constraints in this model use <=
         columns.append(column)
         names.append("slack_" + constraints[j].ConstrName)
 B = np.column_stack(columns)
@@ -83,13 +83,15 @@ b = np.array([c.RHS for c in constraints])
 h = np.zeros(len(constraints))
 for constraint, slope in distance_constraints:
     h[constraint.index] = slope
-#Basic capacities and slacks: x(pi) = x0 + (pi - baseline_pi) * direction
+    
+# Basic capacities and slacks: x(pi) = x0 + (pi - baseline_pi) * direction
 x0 = np.linalg.solve(B, b)
 direction = np.linalg.solve(B, h)
 if np.max(np.abs(B @ x0 - b)) > 1e-7 or x0.min() < -1e-6:
     raise RuntimeError("Invalid reconstructed baseline basis")
-#All nonbasic structural variables/slacks are zero; all variables have lower
-#bound zero and no finite upper bound in this formulation.
+
+# All nonbasic structural variables/slacks are zero; all variables have lower
+# bound zero and no finite upper bound in this formulation.
 lower_delta, upper_delta = -math.pi, math.inf
 lower_name, upper_name = "pi_nonnegative", None
 for name, value, slope in zip(names, x0, direction):
@@ -103,8 +105,8 @@ for name, value, slope in zip(names, x0, direction):
             upper_delta, upper_name = bound, name
 pi_min, pi_max = math.pi + lower_delta, math.pi + upper_delta
 
-#Part 2: change Konin's demand and solve the four scenarios.
-#Konin: change only its demand and re-solve each scenario.
+# Part 2: change Konin's demand and solve the four scenarios.
+# Konin: change only its demand and re-solve each scenario.
 scenario_rows = []
 for change in [-0.2, -0.1, 0, 0.1, 0.2]:
     demand = q_i["Konin"] * (1 + change)
@@ -123,7 +125,7 @@ with open(RESULTS_DIR / "f_konin.csv", "w", newline="", encoding="utf-8-sig") as
     writer.writerow(["demand_change_pct", "demand_tbps", "cost_eur", "cost_change_eur", "cost_change_pct", "within_baseline_rhs_range", "shadow_price_prediction_eur"])
     writer.writerows(scenario_rows)
 
-#Save the sensitivity results
+# Save the sensitivity results
 summary = dict(
     baseline_cost_eur=baseline_cost, konin_shadow_price_eur_per_tbps=shadow_price,
     konin_allowable_demand_min=rhs_min, konin_allowable_demand_max=rhs_max,

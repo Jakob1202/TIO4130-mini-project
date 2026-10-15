@@ -71,9 +71,6 @@ x_ij = m.addVars(all_arcs, vtype=GRB.BINARY, name="x")
 # y_i = 1 if city i is included in the route
 y_i = m.addVars(all_cities, vtype=GRB.BINARY, name="y")
 
-# u_i = position of city i in the route within its area
-u_i = m.addVars(all_cities, lb=0, vtype=GRB.CONTINUOUS, name="u")
-
 
 # Objective function
 m.setObjective(
@@ -123,15 +120,6 @@ for k in K:
     for (i, j) in A_k[k]:
         if i < j:  # add each pair only once
             m.addConstr(x_ij[i, j] + x_ij[j, i] <= 1, name=f"one_direction_{i}_{j}")
-
-    # (15) The starting city has position 0
-    m.addConstr(u_i[s_k[k]] == 0, name=f"order_start_{k}")
-
-    # (16) Upper bound on the positions (lower bound 0 is set on the variable, (19))
-    for i in V_k[k]:
-        m.addConstr(u_i[i] <= M_k[k] - 1, name=f"order_bound_{i}")
-
-# (17)-(19) are handled by the variable types and bounds above
 
 # Solve the model
 m.optimize()

@@ -57,23 +57,18 @@ TOL = 1e-6
 
 results = []
 
-
 def check(name, ok, detail=""):
     results.append(ok)
     print(f"[{'PASS' if ok else 'FAIL'}] {name}" + (f" - {detail}" if detail else ""))
 
-
 def close(a, b):
     return abs(a - b) <= TOL * max(1.0, abs(a), abs(b))
-
 
 def dist(a, b):
     return math.hypot(CASE_CITIES[a][0] - CASE_CITIES[b][0], CASE_CITIES[a][1] - CASE_CITIES[b][1])
 
-
 def distance_limit(d):
     return 2 * math.pi * min(35, 70 - d)
-
 
 # --- load data ---------------------------------------------------------------
 with open(CITIES_FILE, encoding="utf-8-sig", newline="") as f:

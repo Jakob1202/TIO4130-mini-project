@@ -30,7 +30,6 @@ EXISTING_LINKS = {frozenset(("Radom", "Kielce")), frozenset(("Gliwice", "Opole")
 
 results = []
 
-
 def check(name, ok, detail=""):
     results.append(ok)
     print(f"[{'PASS' if ok else 'FAIL'}] {name}" + (f" - {detail}" if detail else ""))
@@ -38,7 +37,6 @@ def check(name, ok, detail=""):
 
 def dist(a, b):
     return math.hypot(a[0] - b[0], a[1] - b[1])
-
 
 # --- load data ---------------------------------------------------------------
 with open(CITIES_FILE, encoding="utf-8-sig", newline="") as f:
@@ -119,10 +117,8 @@ for link in EXISTING_LINKS:
 # --- group rules -------------------------------------------------------------
 on = set(route)
 
-
 def count(*names):
     return sorted(n for n in names if n in on)
-
 
 k = count("Konin", "Kalisz")
 check("At least one of Konin, Kalisz", len(k) >= 1, f"included: {k}")

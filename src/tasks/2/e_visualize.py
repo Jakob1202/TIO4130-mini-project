@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 
-
-
 # Read all city coordinates
 with open(ROOT / 'data/cities.csv', encoding='utf-8-sig') as f:
     cities = {r['city']: (float(r['x']), float(r['y'])) for r in csv.DictReader(f)}
