@@ -104,7 +104,7 @@ if "Łódź" in N:
                 name=f"lodz_{s}",
             )
 
-# Nonnegativity is handled by the variable bounds above
+# (5) Nonnegativity is handled by the variable bounds above
 
 # Solve the model
 m.optimize()
@@ -164,4 +164,4 @@ if m.status == GRB.OPTIMAL:
             "pi": math.pi,
         }, f, indent=2)
 else:
-    raise RuntimeError("No optimal solution found. Existing results were not overwritten.")
+    print("No optimal solution found.")

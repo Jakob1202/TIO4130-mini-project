@@ -25,7 +25,7 @@ areas = {int(k): area for k, area in params["areas"].items()}
 
 # Sets and indices
 
-# K: geographic areas (1, 2, 3)
+# K: geographic areas
 K = sorted({int(row["area"]) for row in cities})
 
 # V_k: list of cities in area k
@@ -70,7 +70,6 @@ x_ij = m.addVars(all_arcs, vtype=GRB.BINARY, name="x")
 
 # y_i = 1 if city i is included in the route
 y_i = m.addVars(all_cities, vtype=GRB.BINARY, name="y")
-
 
 # Objective function
 m.setObjective(
@@ -121,6 +120,8 @@ for k in K:
         if i < j:  # add each pair only once
             m.addConstr(x_ij[i, j] + x_ij[j, i] <= 1, name=f"one_direction_{i}_{j}")
 
+# (14) - (15) Nonnegativity is handled by the variable bounds above
+
 # Solve the model
 m.optimize()
 
@@ -169,6 +170,5 @@ if m.status == GRB.OPTIMAL:
         writer.writerow(["order", "area", "city", "x", "y"])
         for order, city in enumerate(full_route, start=1):
             writer.writerow([order, city_area[city], city, X_i[city], Y_i[city]])
-
 else:
     print("No optimal solution found.")
